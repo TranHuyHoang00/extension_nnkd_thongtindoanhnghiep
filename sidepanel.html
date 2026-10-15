@@ -1,47 +1,39 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Business Lines Extractor</title>
-  <link rel="stylesheet" href="sidepanel.css" />
-</head>
-<body>
-  <label>API URL</label>
-  <input id="apiUrl" type="text" value="https://thongtindoanhnghiep.co/api/industry" />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Business Lines Extractor</title>
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <label>API URL</label>
+    <input
+      id="apiUrl"
+      type="text"
+      value="https://thongtindoanhnghiep.co/api/industry"
+    />
 
-  <label>Gateway URL</label>
-  <input id="gatewayUrl" type="text"/>
+    <label>Gateway URL</label>
+    <input id="gatewayUrl" type="text" />
 
-  <label>API Key</label>
-  <input id="apikey" type="password" autocomplete="off"/>
+    <label>API Key</label>
+    <input id="apikey" type="password" autocomplete="off" />
 
-  <label>Topic</label>
-  <input id="topic" type="text"/>
+    <label>Topic</label>
+    <input id="topic" type="text" />
 
-  <div class="row">
-    <div>
-      <label>Limit (-1 = all)</label>
-      <input id="limit" type="number" value="5" />
+    <label>Limit (-1 = all)</label>
+    <input id="limit" type="number" value="-1" />
+
+    <div class="buttons">
+      <button id="start">Start</button>
+      <button id="stop">Stop</button>
+      <button id="clear">Clear log</button>
     </div>
-    <div>
-      <label>Batch</label>
-      <input id="batch" type="number" value="5" />
-    </div>
-    <div>
-      <label>Delay (ms)</label>
-      <input id="delay" type="number" value="1000" />
-    </div>
-  </div>
 
-  <div class="buttons">
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
-    <button id="clear">Clear log</button>
-  </div>
+    <pre id="log"></pre>
 
-  <pre id="log"></pre>
-
-  <script src="sidepanel.js"></script>
-</body>
+    <script src="sidepanel.js"></script>
+  </body>
 </html>

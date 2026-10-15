@@ -1,5 +1,25 @@
 let STOP = false;
 
+const META = {
+  owner_id: "100cd0dd269d508a5acd7c945f0e25d0",
+  owner_name: "Thông Tin Doanh Nghiệp",
+  profile_type: "custom",
+  channel_name: "business"
+};
+
+function wrapLines(lines) {
+  const now = Date.now();
+  return {
+    owner_id: META.owner_id,
+    owner_name: META.owner_name,
+    profile_type: META.profile_type,
+    channel_name: META.channel_name,
+    created_time: now,
+    crawled_time: now,
+    business_lines: lines
+  };
+}
+
 function log(s) {
   chrome.runtime.sendMessage({ type: "LOG", text: s });
 }
@@ -22,14 +42,10 @@ function toArray(data) {
   return [];
 }
 
-function pushKafka(cfg, items) {
+function pushKafka(cfg, payload) {
   return new Promise((resolve) => {
-    chrome.runtime.sendMessage({ type: "SEND_KAFKA", cfg: cfg, items: items }, (r) => resolve(r));
+    chrome.runtime.sendMessage({ type: "SEND_KAFKA", cfg: cfg, items: payload }, (r) => resolve(r));
   });
-}
-
-function sleep(ms) {
-  return new Promise((res) => setTimeout(res, ms));
 }
 
 async function run(cfg) {
@@ -52,29 +68,11 @@ async function run(cfg) {
     return;
   }
 
-  let buf = [];
-  let sent = 0;
-  for (let i = 0; i < all.length; i++) {
-    if (STOP) { log("Stopped at " + sent + "/" + all.length); return; }
-    buf.push(all[i]);
-    if (buf.length >= cfg.batch) {
-      const r = await pushKafka(cfg, buf);
-      if (!r || !r.ok) { log("Gateway error: " + (r ? (r.error || r.status) : "no response")); return; }
-      sent += buf.length;
-      log("Sent " + sent + "/" + all.length);
-      buf = [];
-      if (cfg.delay > 0) await sleep(cfg.delay);
-    }
-  }
-
-  if (buf.length > 0) {
-    const r = await pushKafka(cfg, buf);
-    if (!r || !r.ok) { log("Gateway error: " + (r ? (r.error || r.status) : "no response")); return; }
-    sent += buf.length;
-    log("Sent " + sent + "/" + all.length);
-  }
-
-  log("Done. Total sent " + sent);
+  if (STOP) { log("Stopped."); return; }
+  log("Sending 1 message with business_lines = " + all.length + " items");
+  const r = await pushKafka(cfg, wrapLines(all));
+  if (!r || !r.ok) { log("Gateway error: " + (r ? (r.error || r.status) : "no response")); return; }
+  log("Done. Sent " + all.length + " business_lines in 1 message.");
 }
 
 chrome.runtime.onMessage.addListener((msg) => {

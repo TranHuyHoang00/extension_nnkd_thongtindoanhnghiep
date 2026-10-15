@@ -19,9 +19,7 @@ function readCfg() {
     apiUrl: el("apiUrl").value.trim(),
     gatewayUrl: joinKey(el("gatewayUrl").value, el("apikey").value),
     topic: el("topic").value.trim(),
-    limit: parseInt(el("limit").value, 10),
-    batch: parseInt(el("batch").value, 10) || 50,
-    delay: parseInt(el("delay").value, 10) || 0
+    limit: parseInt(el("limit").value, 10)
   };
 }
 
